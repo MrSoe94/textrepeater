@@ -1,216 +1,441 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Repeater</title>
+    <title>Text Repeater Pro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            background-color: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
         }
-
-        .container {
-            background-color: #ffffff;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            max-width: 500px;
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-
-        h2 {
-            margin-bottom: 16px;
-            color: #111827;
-            text-align: center;
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
-
-        .form-group {
-            margin-bottom: 16px;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
         }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #374151;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #2563eb;
-        }
-
-        textarea {
-            height: 120px;
-            resize: vertical;
-        }
-
-        .options {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: normal;
-            cursor: pointer;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-primary {
-            background-color: #2563eb;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-        }
-
-        .btn-secondary {
-            background-color: #10b981;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #059669;
-        }
-
-        .btn-danger {
-            background-color: #ef4444;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.6);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
 
-<div class="container">
-    <h2>Text Repeater</h2>
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="p-2 bg-brand-500 text-white rounded-xl shadow-md shadow-brand-500/20">
+                    <i data-lucide="repeat" class="w-5 h-5"></i>
+                </div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-brand-600 to-emerald-400 bg-clip-text text-transparent">
+                    Text Repeater Pro
+                </h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Dark Mode Toggle Button -->
+                <button id="themeToggle" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Ubah Mode Layar">
+                    <i data-lucide="moon" id="themeIconMoon" class="w-5 h-5"></i>
+                    <i data-lucide="sun" id="themeIconSun" class="w-5 h-5 hidden"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <div class="form-group">
-        <label for="textInput">Teks yang Ingin Diulang</label>
-        <input type="text" id="textInput" placeholder="Contoh: Halo dunia!">
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Panel: Controls & Input -->
+        <section class="lg:col-span-5 flex flex-col gap-5">
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 shadow-sm flex flex-col gap-4">
+                <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-4 h-4 text-brand-500"></i>
+                    Pengaturan Teks
+                </h2>
+
+                <!-- Text Input -->
+                <div>
+                    <label for="inputText" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+                        Teks yang Ingin Diulang
+                    </label>
+                    <textarea id="inputText" rows="4" placeholder="Tuliskan kata, kalimat, atau pesan di sini..." 
+                        class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm resize-y"></textarea>
+                </div>
+
+                <!-- Repeat Count -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label for="repeatCount" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                            Jumlah Pengulangan
+                        </label>
+                        <span id="countBadge" class="text-xs font-semibold px-2 py-0.5 rounded-md bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400">
+                            10x
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="range" id="repeatSlider" min="1" max="1000" value="10" 
+                            class="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                        <input type="number" id="repeatCount" min="1" max="10000" value="10" 
+                            class="w-20 p-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-center text-sm font-medium focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- Separator Option -->
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+                        Pemisah Antar Teks
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" data-sep="newline" class="sep-btn p-2.5 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400">
+                            <i data-lucide="corner-down-left" class="w-3.5 h-3.5"></i> Baris Baru (\n)
+                        </button>
+                        <button type="button" data-sep="space" class="sep-btn p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <i data-lucide="space" class="w-3.5 h-3.5"></i> Spasi (" ")
+                        </button>
+                        <button type="button" data-sep="comma" class="sep-btn p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            Koma ( , )
+                        </button>
+                        <button type="button" data-sep="custom" class="sep-btn p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium flex items-center justify-center gap-1.5 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            Kustom...
+                        </button>
+                    </div>
+                    <!-- Custom Separator Input (Hidden by default) -->
+                    <input type="text" id="customSeparator" placeholder="Masukkan karakter pemisah..." 
+                        class="hidden w-full mt-2 p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <!-- Additional Options -->
+                <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/50">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="addNumbers" class="w-4 h-4 text-brand-600 rounded border-slate-300 dark:border-slate-700 focus:ring-brand-500 accent-brand-500">
+                        <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">Tambahkan Nomor Urut (1., 2., 3...)</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="trimOutput" class="w-4 h-4 text-brand-600 rounded border-slate-300 dark:border-slate-700 focus:ring-brand-500 accent-brand-500">
+                        <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">Hapus Spasi di Awal / Akhir</span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2 pt-2">
+                    <button id="clearBtn" class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Reset
+                    </button>
+                    <button id="generateBtn" class="flex-[2] py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-md shadow-brand-500/20 transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="play" class="w-4 h-4 fill-current"></i> Proses Ulang
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Result & Statistics -->
+        <section class="lg:col-span-7 flex flex-col gap-5">
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 shadow-sm flex flex-col flex-1 gap-4">
+                
+                <!-- Output Header -->
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-brand-500"></i>
+                        Hasil Pengulangan
+                    </h2>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2">
+                        <button id="copyBtn" class="py-1.5 px-3 rounded-lg bg-brand-50 dark:bg-brand-500/10 hover:bg-brand-100 dark:hover:bg-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-semibold transition flex items-center gap-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Teks
+                        </button>
+                        <button id="downloadBtn" class="py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh .txt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Textarea Result -->
+                <div class="relative flex-1 min-h-[300px]">
+                    <textarea id="outputText" readonly placeholder="Hasil pengulangan akan ditampilkan di sini secara langsung..." 
+                        class="w-full h-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none font-mono text-xs leading-relaxed resize-none text-slate-700 dark:text-slate-300"></textarea>
+                </div>
+
+                <!-- Realtime Statistics Badge -->
+                <div class="grid grid-cols-3 gap-3 pt-1">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/40 text-center">
+                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Total Karakter</span>
+                        <span id="statChars" class="text-sm font-bold text-slate-700 dark:text-slate-200">0</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/40 text-center">
+                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Total Kata</span>
+                        <span id="statWords" class="text-sm font-bold text-slate-700 dark:text-slate-200">0</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/40 text-center">
+                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Baris</span>
+                        <span id="statLines" class="text-sm font-bold text-slate-700 dark:text-slate-200">0</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-16 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-xs font-medium z-50 pointer-events-none">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500"></i>
+        <span id="toastMsg">Berhasil disalin!</span>
     </div>
 
-    <div class="form-group">
-        <label for="repeatCount">Jumlah Pengulangan</label>
-        <input type="number" id="repeatCount" value="10" min="1" max="10000">
-    </div>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-    <div class="options">
-        <label class="checkbox-label">
-            <input type="checkbox" id="newLineCheck" checked> Baris Baru (\n)
-        </label>
-        <label class="checkbox-label">
-            <input type="checkbox" id="spaceCheck"> Tambah Spasi
-        </label>
-    </div>
+        // State Management
+        let selectedSeparator = 'newline';
 
-    <div class="btn-group">
-        <button class="btn-primary" onclick="repeatText()">Ulangi Teks</button>
-        <button class="btn-danger" onclick="clearText()">Hapus</button>
-    </div>
+        // DOM Elements
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const repeatCount = document.getElementById('repeatCount');
+        const repeatSlider = document.getElementById('repeatSlider');
+        const countBadge = document.getElementById('countBadge');
+        const customSeparator = document.getElementById('customSeparator');
+        const addNumbers = document.getElementById('addNumbers');
+        const trimOutput = document.getElementById('trimOutput');
+        
+        const sepBtns = document.querySelectorAll('.sep-btn');
+        const clearBtn = document.getElementById('clearBtn');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-    <div class="form-group">
-        <label for="resultOutput">Hasil</label>
-        <textarea id="resultOutput" readonly placeholder="Hasil pengulangan teks akan muncul di sini..."></textarea>
-    </div>
+        const statChars = document.getElementById('statChars');
+        const statWords = document.getElementById('statWords');
+        const statLines = document.getElementById('statLines');
 
-    <button class="btn-secondary" onclick="copyResult()" style="width: 100%;">Salin Hasil</button>
-</div>
+        // Dark Mode Setup
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIconMoon = document.getElementById('themeIconMoon');
+        const themeIconSun = document.getElementById('themeIconSun');
 
-<script>
-    function repeatText() {
-        const text = document.getElementById('textInput').value;
-        const count = parseInt(document.getElementById('repeatCount').value) || 0;
-        const addNewLine = document.getElementById('newLineCheck').checked;
-        const addSpace = document.getElementById('spaceCheck').checked;
-        const resultOutput = document.getElementById('resultOutput');
-
-        if (!text) {
-            alert('Masukkan teks yang ingin diulang terlebih dahulu.');
-            return;
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+            themeIconMoon.classList.add('hidden');
+            themeIconSun.classList.remove('hidden');
         }
 
-        if (count <= 0) {
-            alert('Jumlah pengulangan harus lebih dari 0.');
-            return;
-        }
-
-        let separator = '';
-        if (addSpace) separator += ' ';
-        if (addNewLine) separator += '\n';
-
-        const repeated = Array(count).fill(text).join(separator);
-        resultOutput.value = repeated;
-    }
-
-    function copyResult() {
-        const resultOutput = document.getElementById('resultOutput');
-        if (!resultOutput.value) {
-            alert('Belum ada teks untuk disalin.');
-            return;
-        }
-
-        resultOutput.select();
-        navigator.clipboard.writeText(resultOutput.value).then(() => {
-            alert('Teks berhasil disalin ke clipboard!');
-        }).catch(() => {
-            alert('Gagal menyalin teks.');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            themeIconMoon.classList.toggle('hidden', isDark);
+            themeIconSun.classList.toggle('hidden', !isDark);
         });
-    }
 
-    function clearText() {
-        document.getElementById('textInput').value = '';
-        document.getElementById('resultOutput').value = '';
-        document.getElementById('repeatCount').value = '10';
-    }
-</script>
+        // Event Listeners for Live Updates
+        inputText.addEventListener('input', processText);
+        addNumbers.addEventListener('change', processText);
+        trimOutput.addEventListener('change', processText);
+        customSeparator.addEventListener('input', processText);
 
+        // Sync slider and count input
+        repeatSlider.addEventListener('input', (e) => {
+            repeatCount.value = e.target.value;
+            countBadge.textContent = `${e.target.value}x`;
+            processText();
+        });
+
+        repeatCount.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value) || 1;
+            if (val < 1) val = 1;
+            if (val > 10000) val = 10000;
+            repeatSlider.value = Math.min(val, 1000);
+            countBadge.textContent = `${val}x`;
+            processText();
+        });
+
+        // Separator Selection
+        sepBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sepBtns.forEach(b => {
+                    b.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'text-brand-600', 'dark:text-brand-400');
+                    b.classList.add('border-slate-200', 'dark:border-slate-700', 'text-slate-600', 'dark:text-slate-400');
+                });
+
+                btn.classList.remove('border-slate-200', 'dark:border-slate-700', 'text-slate-600', 'dark:text-slate-400');
+                btn.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'text-brand-600', 'dark:text-brand-400');
+
+                selectedSeparator = btn.dataset.sep;
+                
+                if (selectedSeparator === 'custom') {
+                    customSeparator.classList.remove('hidden');
+                    customSeparator.focus();
+                } else {
+                    customSeparator.classList.add('hidden');
+                }
+
+                processText();
+            });
+        });
+
+        // Core Repeating Logic
+        function processText() {
+            const text = inputText.value;
+            const count = parseInt(repeatCount.value) || 0;
+
+            if (!text || count <= 0) {
+                outputText.value = '';
+                updateStats(0, 0, 0);
+                return;
+            }
+
+            // Determine separator character
+            let sep = '';
+            switch (selectedSeparator) {
+                case 'newline':
+                    sep = '\n';
+                    break;
+                case 'space':
+                    sep = ' ';
+                    break;
+                case 'comma':
+                    sep = ', ';
+                    break;
+                case 'custom':
+                    sep = customSeparator.value;
+                    break;
+            }
+
+            // Build array
+            let items = [];
+            for (let i = 1; i <= count; i++) {
+                let currentText = text;
+                if (addNumbers.checked) {
+                    currentText = `${i}. ${currentText}`;
+                }
+                items.push(currentText);
+            }
+
+            let result = items.join(sep);
+
+            if (trimOutput.checked) {
+                result = result.trim();
+            }
+
+            outputText.value = result;
+
+            // Calculate Statistics
+            const charCount = result.length;
+            const wordCount = result.trim() === '' ? 0 : result.trim().split(/\s+/).length;
+            const lineCount = result === '' ? 0 : result.split('\n').length;
+
+            updateStats(charCount, wordCount, lineCount);
+        }
+
+        // Update Stats UI
+        function updateStats(chars, words, lines) {
+            statChars.textContent = chars.toLocaleString('id-ID');
+            statWords.textContent = words.toLocaleString('id-ID');
+            statLines.textContent = lines.toLocaleString('id-ID');
+        }
+
+        // Action: Reset Form
+        clearBtn.addEventListener('click', () => {
+            inputText.value = '';
+            outputText.value = '';
+            repeatCount.value = 10;
+            repeatSlider.value = 10;
+            countBadge.textContent = '10x';
+            addNumbers.checked = false;
+            trimOutput.checked = false;
+            customSeparator.value = '';
+            updateStats(0, 0, 0);
+            showToast('Form berhasil dibersihkan');
+        });
+
+        // Action: Generate (Force Process & Scroll)
+        generateBtn.addEventListener('click', () => {
+            processText();
+            showToast('Teks berhasil diulang!');
+        });
+
+        // Action: Copy to Clipboard
+        copyBtn.addEventListener('click', () => {
+            if (!outputText.value) {
+                showToast('Tidak ada teks untuk disalin!');
+                return;
+            }
+
+            // Fallback & Standard Copy
+            outputText.select();
+            try {
+                document.execCommand('copy');
+                showToast('Teks berhasil disalin ke clipboard!');
+            } catch (err) {
+                showToast('Gagal menyalin teks');
+            }
+        });
+
+        // Action: Download Text File
+        downloadBtn.addEventListener('click', () => {
+            const content = outputText.value;
+            if (!content) {
+                showToast('Tidak ada teks untuk diunduh!');
+                return;
+            }
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `repeated-text-${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('File berhasil diunduh!');
+        });
+
+        // Helper: Toast Message
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-16', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-16', 'opacity-0');
+            }, 2500);
+        }
+    </script>
 </body>
 </html>
